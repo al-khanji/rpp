@@ -26,20 +26,6 @@ struct emission_forwarder
         }
     };
 
-    template <class Ret, class... Args>
-    struct caller<Ret (*) (Args...)>
-    {
-        typedef Ret (*Function) (Args...);
-
-        static auto call(Function f, void **args)
-        {
-            return utils::apply_emission(std::forward<Function>(f),
-                                         args,
-                                         utils::List<EmissionArgs...>{},
-                                         std::index_sequence_for<Args...>{});
-        }
-    };
-
     template <class T>
     static void call(T t, void **args)
     {
