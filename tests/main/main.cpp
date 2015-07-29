@@ -1,97 +1,6 @@
 #include <rpp.hpp>
 #include <iostream>
 #include <cstdio>
-#include <vector>
-#include <memory>
-#include <tuple>
-
-namespace utils {
-
-template <class Callable, class... Args>
-auto apply(Callable c, Args... args)
-{
-    return std::forward<Callable>(c)(std::forward<Args>(args)...);
-}
-
-
-
-}
-
-using rpp::utils::List;
-using rpp::utils::can_call;
-using rpp::utils::accepts_n_of;
-
-template <class>
-struct CallableInfo;
-
-//template <class...>
-//struct are_arguments_compatible : std::false_type {};
-
-//template <class T>
-//struct are_arguments_compatible<T, T> : std::true_type {};
-
-//template <>
-//struct are_arguments_compatible<List<>, List<>> : std::true_type {};
-
-//template <class List1>
-//struct are_arguments_compatible<List1, List<>> : std::true_type {};
-
-//// XXX CHECK SINGLE ARGUMENTS HERE
-
-//template <class Arg1, class... Tail1, class Arg2, class... Tail2>
-//struct are_arguments_compatible<List<Arg1, Tail1...>, List<Arg2, Tail2...>>
-//        : bool_constant<are_arguments_compatible<Arg1, Arg2>::value
-//                        && are_arguments_compatible<List<Tail1...>, List<Tail2...>>::value>
-//{};
-
-//template <class RType, class... FArguments>
-//struct CallableInfo<RType (*) (FArguments...)>
-//{
-//    using ResultType = RType;
-//    using ArgumentList = List<FArguments...>;
-
-//    template <class... EmissionArguments>
-//    struct can_receive_emission
-//            : bool_constant<are_arguments_compatible<ArgumentList,
-//                                                     List<EmissionArguments...>>::value>
-//    {};
-//};
-
-//template <class T> struct remove_const_lvalue_ref           {typedef T type;};
-//template <class T> struct remove_const_lvalue_ref<const T&> {typedef T type;};
-
-//template <class T>
-//using remove_const_lvalue_ref_t = typename remove_const_lvalue_ref<T>::type;
-
-//template <class A1, class A2>
-//struct are_arguments_compatible : std::is_convertible<A1, A2> {};
-
-//template <class A1, class A2>
-//struct are_arguments_compatible<A1, A2&> : std::false_type {};
-
-//template <class A>
-//struct are_arguments_compatible<A&, A&> : std::true_type {};
-
-//template <class List1, class List2>
-//struct can_emit_to : std::false_type {};
-
-//template <>
-//struct can_emit_to<List<>, List<>> : std::true_type {};
-
-//template <class List1>
-//struct can_emit_to<List1, List<>> : std::true_type {};
-
-//template <class Arg1, class Arg2, class... Tail1, class... Tail2>
-//struct can_emit_to<List<Arg1, Tail1...>,
-//                   List<Arg2, Tail2...>>
-//    : bool_constant< are_arguments_compatible< remove_const_lvalue_ref_t<Arg1>
-//                                             , remove_const_lvalue_ref_t<Arg2>
-//                                             > ::value
-//                   , can_emit_to< List<Tail1...>
-//                                , List<Tail2...>
-//                                > ::value
-//                   > {};
-
 
 void ifb_receiver(int i, float f, bool b)
 {
@@ -117,6 +26,9 @@ void v_receiver(void)
 
 int main()
 {
+    using rpp::utils::can_call;
+    using rpp::utils::accepts_n_of;
+
     rpp::emitter<int, float, bool> ifb_emitter;
     ifb_emitter.connect(ifb_receiver);
     ifb_emitter.connect(if_receiver);
