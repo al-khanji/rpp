@@ -1,72 +1,41 @@
 #include <rpp.hpp>
+
 #include <iostream>
-#include <cstdio>
-
-void ifb_receiver(int i, float f, bool b)
-{
-    const char * const bb = b ? "true" : "false";
-    std::printf("ifb_receiver(%d, %f, %s)\n", i, f, bb);
-}
-
-void if_receiver(int i, float f)
-{
-    std::printf("if_receiver(%d, %f)\n", i, f);
-}
-
-void i_receiver(int i)
-{
-    std::printf("i_receiver(%d)\n", i);
-}
-
-void v_receiver(void)
-{
-    std::printf("v_receiver(void)\n");
-}
-
+#include <string>
 
 int main()
 {
-    using rpp::utils::can_call;
-    using rpp::utils::accepts_n_of;
+    rpp::property<int> a, b, c;
 
-    rpp::emitter<int, float, bool> ifb_emitter;
-    ifb_emitter.connect(ifb_receiver);
-    ifb_emitter.connect(if_receiver);
-    ifb_emitter.connect(i_receiver);
-    ifb_emitter.connect(v_receiver);
+    c.onChanged.connect([] (int i) {
+        std::cout << "c changed: " << i << std::endl;
+    });
 
-    auto lambda = [] {
-        std::puts("lambda called!");
-    };
+    c.bind([](int i, int j, int k) { return i + j + k; }, a, b, 50);
 
-    auto lambda2 = [] (int i, float f) {
-        std::printf("lambda2 called! %d %f \n", i, f);
-    };
+    a = 10;
+    b = 20;
 
-    using lambda_type = decltype(lambda);
+    a = 30;
+    b = -30;
 
-    std::cout << "can call lambda() "    << can_call<lambda_type     >::value << std::endl;
-    std::cout << "can call lambda(int) " << can_call<lambda_type, int>::value << std::endl;
+    rpp::property<std::string> etu, suku, koko;
 
-    void f(int);
-    void n();
+    koko.onChanged.connect([] (const std::string &s) {
+        std::cout << "koko nimi on nyt " << s << std::endl;
+    });
 
-    using f_type = decltype(f);
-    using n_type = decltype(n);
+    koko.bind([] (const std::string &s1, const std::string &s2) {
+        return s1 + " " + s2;
+    }, etu, suku);
 
-    std::cout << "can call f() "               << can_call<f_type            >::value << std::endl;
-    std::cout << "can call f(int) "            << can_call<f_type, int       >::value << std::endl;
-    std::cout << "can call f(int, float) "     << can_call<f_type, int, float>::value << std::endl;
+    etu = "Jonna";
+    suku = "Juola";
 
-    std::cout << "accepts n of f(int, float) " << accepts_n_of<f_type, int, float>::value << std::endl;
+    suku = "Al-Khanji";
+    etu = "Louai";
+    etu = "Leevi";
+    etu = "Baron";
 
-    std::cout << "accepts n of n() "           << accepts_n_of<n_type            >::value << std::endl;
-    std::cout << "accepts n of n(int) "        << accepts_n_of<n_type, int       >::value << std::endl;
-
-
-    ifb_emitter.connect(lambda);
-    ifb_emitter.connect(lambda2);
-
-    ifb_emitter.fire(42, 2.5, true);
     return 0;
 }

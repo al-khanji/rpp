@@ -1,2 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = main
+SUBDIRS = main \
+    emitter \
+    lovi \
+    threaded_property
